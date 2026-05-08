@@ -8,7 +8,7 @@ import random
 from helper import *
 from models import *
 import torch
-import tensorflow as tf
+# import tensorflow as tf
 import numpy as np
 import numpy.ma as ma
 
@@ -30,7 +30,7 @@ parser.add_argument('--lr', type=float, default=5e-4)
 parser.add_argument('--lr_decay', type=int, default=10)
 parser.add_argument('--lr_ratio', type=float, default=0.2)
 parser.add_argument('--batch_size', type=int, default=64)
-parser.add_argument('--gpu_id', type=int, default=2)
+parser.add_argument('--gpu_id', type=int, default=0)
 
 args = parser.parse_args()
 dataset = args.dataset
@@ -115,7 +115,7 @@ dir = log_dir + 'observation_mask_multi_encoder_' + str(datetime.datetime.now().
 if not os.path.exists(dir):
     os.makedirs(dir)
     os.makedirs(dir + 'model/')
-    os.makedirs(dir + 'tflog/')
+    # os.makedirs(dir + 'tflog/')
     for k in range(KFold):
         os.makedirs(dir + 'model/' + str(k) + '/')
 
@@ -237,34 +237,34 @@ def test(phase, epoch, test_loader):
     writelog(f, 'Precision : ' + str(prec))
     writelog(f, 'Recall : ' + str(recall))
 
-    # Tensorboard Logging
-    info = {'loss': test_loss,
-            'balacc': balacc,
-            'auc': auc,
-            'auc_prc': auprc,
-            'sens': sen,
-            'spec': spec,
-            'precision': prec,
-            'recall': recall
-            }
+    # # Tensorboard Logging
+    # info = {'loss': test_loss,
+    #         'balacc': balacc,
+    #         'auc': auc,
+    #         'auc_prc': auprc,
+    #         'sens': sen,
+    #         'spec': spec,
+    #         'precision': prec,
+    #         'recall': recall
+    #         }
 
-    for tag, value in info.items():
-        summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
-        if phase == 'valid':
-            tfw_valid.add_summary(summary, epoch)
-        else:
-            tfw_test.add_summary(summary, epoch)
+    # for tag, value in info.items():
+    #     summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
+    #     if phase == 'valid':
+    #         tfw_valid.add_summary(summary, epoch)
+    #     else:
+    #         tfw_test.add_summary(summary, epoch)
 
     return auc, auprc, acc, balacc, sen, spec, prec, recall
 
 # Loop for kfold
 for k in range(KFold):
-    writelog(f, 'FOLD ' + str(k))
+    # writelog(f, 'FOLD ' + str(k))
 
-    # Tensorboard Logging
-    tfw_train = tf.summary.FileWriter(dir + 'tflog/kfold_' + str(k) + '/train_')
-    tfw_valid = tf.summary.FileWriter(dir + 'tflog/kfold_' + str(k) + '/valid_')
-    tfw_test = tf.summary.FileWriter(dir + 'tflog/kfold_' + str(k) + '/test_')
+    # # Tensorboard Logging
+    # tfw_train = tf.summary.FileWriter(dir + 'tflog/kfold_' + str(k) + '/train_')
+    # tfw_valid = tf.summary.FileWriter(dir + 'tflog/kfold_' + str(k) + '/valid_')
+    # tfw_test = tf.summary.FileWriter(dir + 'tflog/kfold_' + str(k) + '/test_')
 
     # Get dataset
     train_data = kfold_data[k][0]

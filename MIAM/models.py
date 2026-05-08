@@ -1,11 +1,11 @@
-import tensorflow as tf
+# import tensorflow as tf
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 import math
 import numpy as np
-from attention_graph_util import *
+# from attention_graph_util import *
 
 import copy
 
@@ -193,6 +193,7 @@ class PositionalEncoder_TimeDescriptor(nn.Module):
         # pos and i
         pe = torch.zeros(batch_size, self.max_seq_len, self.d_model)
         pe = self.get_sinusoid_encoding_table(self.max_seq_len, self.d_model, t)
+                
         return pe.permute(0, 2, 1)
 
     def forward(self, x, m, delta, t):
@@ -203,9 +204,9 @@ class PositionalEncoder_TimeDescriptor(nn.Module):
 
         pos = self.time_encoding(t)
 
-        x = x + Variable(pos, requires_grad=False)#.cuda()
-        m = m + Variable(pos, requires_grad=False)#.cuda()
-        delta = delta + Variable(pos, requires_grad=False)#.cuda()
+        x = x + Variable(pos, requires_grad=False).cuda()
+        m = m + Variable(pos, requires_grad=False).cuda()
+        delta = delta + Variable(pos, requires_grad=False).cuda()
 
         # seq_len = x.size(1)
         # x = x + Variable(self.pe[:, :seq_len], requires_grad=False).cuda()
@@ -269,8 +270,8 @@ class MultiHeadAttention(nn.Module):
 
         # calculate attention using function we will define next
         scores = attention(q, k, v, self.d_k, mask, self.dropout)
-        if tf == 1:
-            scores = scores.transpose(2, 3)
+        # if tf == 1:
+        #     scores = scores.transpose(2, 3)
 
         # concatenate heads and put through final linear layer
         concat = scores.transpose(1, 2).contiguous() \
